@@ -39,15 +39,15 @@ for col in test:
     test[f'{col}'] = imr.transform(test[[f'{col}']])
 
 
-fig, ax  = plt.subplots(2,4,figsize=(16,10))
-sns.countplot('Loan_Status', data = train, ax=ax[0][0] )
-sns.countplot('Gender', data = train, ax=ax[0][1] )
-sns.countplot('Married', data = train, ax=ax[0][2] )
-sns.countplot('Education', data = train, ax=ax[0][3] )
-sns.countplot('Self_Employed', data = train, ax=ax[1][0] )
-sns.countplot('Dependents', data = train, ax=ax[1][1] )
-sns.countplot('Property_Area', data = train, ax=ax[1][2] )
-sns.countplot('Loan_Status', data = train, ax=ax[1][3] )
+# fig, ax  = plt.subplots(2,4,figsize=(16,10))
+# sns.countplot('Loan_Status', data = train, ax=ax[0][0] )
+# sns.countplot('Gender', data = train, ax=ax[0][1] )
+# sns.countplot('Married', data = train, ax=ax[0][2] )
+# sns.countplot('Education', data = train, ax=ax[0][3] )
+# sns.countplot('Self_Employed', data = train, ax=ax[1][0] )
+# sns.countplot('Dependents', data = train, ax=ax[1][1] )
+# sns.countplot('Property_Area', data = train, ax=ax[1][2] )
+# sns.countplot('Loan_Status', data = train, ax=ax[1][3] )
 
 
 le = LabelEncoder()
@@ -73,15 +73,15 @@ test['CoapplicantIncome'] = test['CoapplicantIncome'].astype('int')
 test.head()
 
 
-fig, ax  = plt.subplots(2,4,figsize=(16,10))
-sns.countplot('Loan_Status', data = train, ax=ax[0][0] )
-sns.countplot('Gender', data = train, ax=ax[0][1] )
-sns.countplot('Married', data = train, ax=ax[0][2] )
-sns.countplot('Education', data = train, ax=ax[0][3] )
-sns.countplot('Self_Employed', data = train, ax=ax[1][0] )
-sns.countplot('Dependents', data = train, ax=ax[1][1] )
-sns.countplot('Property_Area', data = train, ax=ax[1][2] )
-sns.countplot('Loan_Status', data = train, ax=ax[1][3] )
+# fig, ax  = plt.subplots(2,4,figsize=(16,10))
+# sns.countplot('Loan_Status', data = train, ax=ax[0][0] )
+# sns.countplot('Gender', data = train, ax=ax[0][1] )
+# sns.countplot('Married', data = train, ax=ax[0][2] )
+# sns.countplot('Education', data = train, ax=ax[0][3] )
+# sns.countplot('Self_Employed', data = train, ax=ax[1][0] )
+# sns.countplot('Dependents', data = train, ax=ax[1][1] )
+# sns.countplot('Property_Area', data = train, ax=ax[1][2] )
+# sns.countplot('Loan_Status', data = train, ax=ax[1][3] )
 
 
 
