@@ -49,10 +49,15 @@ Medsokerinntekt = st.number_input("Medsøkerinntekt", min_value=0.0, max_value=1
                                        " lån eller annen form for finansiering. Dette kan være en ektefelle, samboer eller"
                                        " noen annen form for partner.")
 
-Laan = st.number_input("Lån (antall 1000)", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0, key=10,
-                       help="Hvor mye vil du låne?")
+tid_laan = st.number_input("Tidligere lån? (antall 1000)", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0, key=10,
+                       help="Hvor mye tidligere lån har du?")
 
-mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=11)
+onsk_laan = st.number_input("Lån (antall 1000)", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0, key=11,
+                            help="Hvor mye vil du låne?")
+
+Laan = tid_laan + onsk_laan
+
+mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=12)
 
 # NB! må få fikste if setningen skikkerlig når vi blir ferdig med ML delen. 
 if st.button('Send søknad'):
@@ -81,10 +86,10 @@ with st.sidebar:
     st.markdown('This dashboard is made by Joel, Dino and Trish, using **Streamlit**')
 
 var = [alder, gender, Selvstendig, Utdanning, Barn,
-       Eigendom, Kredit_hist, Inntekt, Medsokerinntekt, Laan, mnd]
+       Eigendom, Kredit_hist, Inntekt, Medsokerinntekt, tid_laan, onsk_laan, mnd, Laan]
 
 var_str = ['Alder', 'Kjønn', 'Selvstendig', 'Utdanning', 'Barn',
-           'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Lån', 'Låne lengde']
+           'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Tidligere lån', 'Låne mengde', 'Låne lengde', 'Totalt lån']
 
 for i, k in zip(var, var_str):
     st.write(k,': ', i)
