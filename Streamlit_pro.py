@@ -7,6 +7,7 @@ Created on Tue Jan 10 10:51:21 2023
 """
 
 import streamlit as st
+import tin100
 import pandas as pd
 
 st.title("""
@@ -61,7 +62,7 @@ mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid v
 
 # NB! må få fikste if setningen skikkerlig når vi blir ferdig med ML delen. 
 if st.button('Send søknad'):
-    pred = pred(X.reshape(1, -1), model)
+    pred = tin100.pred(X.reshape(1, -1), model)
     if prediction == 1:
         st.write('Takk for søknaden, din søknad er akseptert. Du kan låne: {Lån * 1000} USD i {Lånetid} måneder')
     else:
