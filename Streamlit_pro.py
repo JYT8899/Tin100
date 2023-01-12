@@ -7,15 +7,16 @@ Created on Tue Jan 10 10:51:21 2023
 """
 
 import streamlit as st
-import tin100
+import tin100 as tin
 import pandas as pd
+import numpy as np
 
 st.title("""
           Lånesøknad
     """)
 
 st.markdown("![Alt Text]("
-"https://blogg.paretobank.no/hs-fs/hubfs/Driftsfinansiering%20Slik%20skriver%20du%\
+            "https://blogg.paretobank.no/hs-fs/hubfs/Driftsfinansiering%20Slik%20skriver%20du%\
 20en%20lånesøknad.png?width=1000&name=Driftsfinansiering%20Slik%20skriver%20du%20en%20lånesøknad.png)")
 
 st.write("""
@@ -38,36 +39,53 @@ Barn = st.number_input("Barn under 18 år", min_value=0, max_value=100, value=0,
 
 Eigendom = st.selectbox("Eiendomsområde", ["Urban", "Semiurban", "Landlig"], key=7,
                         help="Hvilke eigendomsområder er du fra av de tre alternativene?")
+if Eigendom == 'Urban':
+    Eigendom = 0
+elif Eigendom == 'Semiurban':
+    Eigendom = 1
+else:
+    Eigendom = 2
 
-Kredit_hist = st.slider("Kredit historie", 0.0, 1.0, 0.05)
+Kredit_hist = st.slider("Kredit historie", 0, 1, 1)
 
-Inntekt = st.number_input("Inntekt", min_value=0.0, max_value=10000000.0, step=5000.0, value=45000.0, key=8,
+Inntekt = st.number_input("Inntekt (Antall 1000)", min_value=0.0, max_value=10000000.0, step=5.0, value=50.0, key=8,
                           help="Her snakker vi om bruttoinntekt (inntekt før skatt)")
 
-Medsokerinntekt = st.number_input("Medsøkerinntekt", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0,
-                                  key=9,
+Medsokerinntekt = st.number_input("Medsøkerinntekt (Antall 1000)", min_value=0.0, max_value=10000000.0,
+                                  step=5.0, value=50.0, key=9,
                                   help="Medsøkerinntekt er inntekten til en person som søker sammen med deg om å få et "
-                                       " lån eller annen form for finansiering. Dette kan være en ektefelle, samboer eller"
+                                       "lån eller annen form for finansiering. Dette kan være en ektefelle, samboer "
+                                       "eller "
                                        " noen annen form for partner.")
 
-tid_laan = st.number_input("Tidligere lån? (antall 1000)", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0, key=10,
-                       help="Hvor mye tidligere lån har du?")
+tid_laan = st.number_input("Tidligere lån? (antall 1000)", min_value=0.0, max_value=10000000.0, step=5.0, value=50.0,
+                           key=10, help="Hvor mye tidligere lån har du?")
 
-onsk_laan = st.number_input("Lån (antall 1000)", min_value=0.0, max_value=10000000.0, step=5000.0, value=25000.0, key=11,
-                            help="Hvor mye vil du låne?")
+onsk_laan = st.number_input("Lån (antall 1000)", min_value=0.0, max_value=10000000.0, step=5.0, value=50.0,
+                            key=11, help="Hvor mye vil du låne?")
+
+egenkapital = st.number_input("Egenkapital (antall 1000)", min_value=0.0, max_value=10000000.0, step=1.0,
+                              value=5.0, key=12, help="Hvor mye egenkapital har du?")
 
 Laan = tid_laan + onsk_laan
 
 mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=12)
 
-# NB! må få fikste if setningen skikkerlig når vi blir ferdig med ML delen. 
-if st.button('Send søknad'):
-    pred = tin100.pred(X.reshape(1, -1), model)
-    if prediction == 1:
-        st.write('Takk for søknaden, din søknad er akseptert. Du kan låne: {Lån * 1000} USD i {Lånetid} måneder')
-    else:
-        st.write(
-            'Takk for søknaden, din søknad er dessverre ikke akseptert. Du kan ikkj låne: {Lån * 1000} USD i {Lånetid} måneder')
+### Legger dataen inn i en data sett
+
+data_dic = {'Gender': [np.where(gender == 'Male', 1, 0)],
+            'Married': [np.where(Gift == 'Ja', 1, 0)],
+            'Dependents': [Barn],
+            'Education': [np.where(Utdanning == 'Ja', 1, 0)],
+            'Self_Employed': [np.where(Selvstendig == 'Ja', 1, 0)],
+            'ApplicantIncome': [Inntekt*1000],
+            'CoapplicantIncome': [Medsokerinntekt*1000],
+            'LoanAmount': [Laan*1000],
+            'Loan_Amount_Term': [tid_laan*1000],
+            'Credit_History': [Kredit_hist],
+            'Property_Area': [np.where(Eigendom == 'Urban', 1, 0)]}
+
+data = pd.DataFrame.from_dict(data_dic)
 
 with st.sidebar:
     st.subheader('Om siden')
@@ -90,7 +108,23 @@ var = [alder, gender, Selvstendig, Utdanning, Barn,
        Eigendom, Kredit_hist, Inntekt, Medsokerinntekt, tid_laan, onsk_laan, mnd, Laan]
 
 var_str = ['Alder', 'Kjønn', 'Selvstendig', 'Utdanning', 'Barn',
-           'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Tidligere lån', 'Låne mengde', 'Låne lengde', 'Totalt lån']
+           'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Tidligere lån', 'Låne mengde', 'Låne lengde',
+           'Totalt lån']
+
+# LEGG TIL EGENKAPITAL
 
 for i, k in zip(var, var_str):
-    st.write(k,': ', i)
+    if k == 'Inntekt' or k == 'Medsokerinntekt' or k == 'Tidligere lån' or k == 'Låne mengde' or k == 'Total lån':
+       i = i * 1000
+    st.write(k, ': ', i)
+
+### knapp som sender lånesøknaden til testing
+
+if st.button('Send søknad'):
+    prediction = tin.predic(data, tin.RanForClf())
+    if prediction == 0 or onsk_laan * 0.15 >= (egenkapital * 1000):
+        st.write('Takk for søknaden, din søknad er dessverre ikke akseptert. \
+                 Du kan ikke låne: {0} USD i {1} måneder'.format(Laan*1000, mnd))
+    else:
+        st.write('Takk for søknaden, din søknad er akseptert. Du kan låne:\
+          {0} USD i {1} måneder'.format(Laan*1000, mnd))
