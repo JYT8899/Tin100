@@ -19,9 +19,6 @@ st.markdown("![Alt Text]("
             "https://blogg.paretobank.no/hs-fs/hubfs/Driftsfinansiering%20Slik%20skriver%20du%\
 20en%20lånesøknad.png?width=1000&name=Driftsfinansiering%20Slik%20skriver%20du%20en%20lånesøknad.png)")
 
-st.write("""
-          Spørreundersøkelse
-    """)
 
 alder = st.number_input("Alder", min_value=0, max_value=100, value=30, step=1, key=1)
 
@@ -67,9 +64,18 @@ onsk_laan = st.number_input("Lån (antall 1000)", min_value=0.0, max_value=10000
 egenkapital = st.number_input("Egenkapital (antall 1000)", min_value=0.0, max_value=10000000.0, step=1.0,
                               value=5.0, key=12, help="Hvor mye egenkapital har du?")
 
+mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=12)
+
+rente = st.slider("Rente", min_value=0.0, max_value=15.0, step=0.5)
+
 Laan = tid_laan + onsk_laan
 
-mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=12)
+if rente < 1.04:
+    rente = 1.07
+else:
+    rente += 0.03
+
+Laan_med_rente = Laan * (1 + rente / 100) ** (mnd / 12)
 
 ### Legger dataen inn i en data sett
 
@@ -78,10 +84,10 @@ data_dic = {'Gender': [np.where(gender == 'Male', 1, 0)],
             'Dependents': [Barn],
             'Education': [np.where(Utdanning == 'Ja', 1, 0)],
             'Self_Employed': [np.where(Selvstendig == 'Ja', 1, 0)],
-            'ApplicantIncome': [Inntekt*1000],
-            'CoapplicantIncome': [Medsokerinntekt*1000],
-            'LoanAmount': [Laan*1000],
-            'Loan_Amount_Term': [tid_laan*1000],
+            'ApplicantIncome': [Inntekt * 1000],
+            'CoapplicantIncome': [Medsokerinntekt * 1000],
+            'LoanAmount': [Laan_med_rente * 1000],
+            'Loan_Amount_Term': [tid_laan * 1000],
             'Credit_History': [Kredit_hist],
             'Property_Area': [np.where(Eigendom == 'Urban', 1, 0)]}
 
@@ -109,22 +115,26 @@ var = [alder, gender, Selvstendig, Utdanning, Barn,
 
 var_str = ['Alder', 'Kjønn', 'Selvstendig', 'Utdanning', 'Barn',
            'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Tidligere lån', 'Låne mengde', 'Låne lengde',
-           'Totalt lån']
-
-# LEGG TIL EGENKAPITAL
+           'Totalt lån med rente']
 
 for i, k in zip(var, var_str):
-    if k == 'Inntekt' or k == 'Medsokerinntekt' or k == 'Tidligere lån' or k == 'Låne mengde' or k == 'Total lån':
-       i = i * 1000
+    if k == 'Inntekt' or k == 'Medsokerinntekt' or k == 'Tidligere lån' or k == 'Låne mengde':
+        i = i * 1000
+    elif k == 'Totalt lån med rente':
+        i = np.around(Laan_med_rente * 1000, 1)
     st.write(k, ': ', i)
 
 ### knapp som sender lånesøknaden til testing
 
 if st.button('Send søknad'):
     prediction = tin.predic(data, tin.RanForClf())
-    if prediction == 0 or onsk_laan * 0.15 >= (egenkapital * 1000):
+    if prediction == 0:
         st.write('Takk for søknaden, din søknad er dessverre ikke akseptert. \
-                 Du kan ikke låne: {0} USD i {1} måneder'.format(Laan*1000, mnd))
+                 Du kan ikke låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
+    elif onsk_laan * 0.15 >= (egenkapital * 1000):
+        st.write('Takk for søknaden, din søknad er dessverre ikke akseptert. \
+            For å få det ønsket lånet må du ha en egenekapital \
+            større eller lik {2} Du kan ikke låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd, onsk_laan * 0.15))
     else:
         st.write('Takk for søknaden, din søknad er akseptert. Du kan låne:\
-          {0} USD i {1} måneder'.format(Laan*1000, mnd))
+          {0} USD i {1} måneder'.format(Laan * 1000, mnd))

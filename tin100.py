@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
+import tensorflow
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
