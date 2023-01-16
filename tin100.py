@@ -21,12 +21,6 @@ test_raw = pd.read_csv("test.csv")
 train = train_raw.drop(['Loan_ID'], axis=1)
 test = test_raw.drop(['Loan_ID'], axis=1)
 
-# Sjekker summen av NAN verdier i hver kollone for train
-# train.isnull().sum()
-
-# Sjekker summen av NAN verdier i hver kollone for test
-# test.isnull().sum()
-
 for col in train:
     imr = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
     imr = imr.fit(train[[f'{col}']])
@@ -37,15 +31,6 @@ for col in test:
     imr = imr.fit(test[[f'{col}']])
     test[f'{col}'] = imr.transform(test[[f'{col}']])
 
-# fig, ax  = plt.subplots(2,4,figsize=(16,10))
-# sns.countplot('Loan_Status', data = train, ax=ax[0][0] )
-# sns.countplot('Gender', data = train, ax=ax[0][1] )
-# sns.countplot('Married', data = train, ax=ax[0][2] )
-# sns.countplot('Education', data = train, ax=ax[0][3] )
-# sns.countplot('Self_Employed', data = train, ax=ax[1][0] )
-# sns.countplot('Dependents', data = train, ax=ax[1][1] )
-# sns.countplot('Property_Area', data = train, ax=ax[1][2] )
-# sns.countplot('Loan_Status', data = train, ax=ax[1][3] )
 
 le = LabelEncoder()
 for col in train[

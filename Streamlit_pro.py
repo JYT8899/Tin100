@@ -127,22 +127,27 @@ for i, k in zip(var, var_str):
         i = np.around((onsk_laan * 1000) * 0.15, 1)
     st.write(k, ': ', i)
 
+
 ### knapp som sender lånesøknaden til testing
 
-if st.button('Send søknad'):
-    if (onsk_laan * 1000) * 0.15 <= (egenkapital * 1000):
-        st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
-                 ' \
-    For å få det ønsket lånet må du ha en egenekapital \
-    større eller lik {2} Du kan ikke låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd,
-                                                                         (onsk_laan * 1000) * 0.15))
-    prediction = tin.predic(data, tin.RanForClf())
+def knapp():
+    if st.button('Send søknad'):
+        if (onsk_laan * 1000) * 0.15 >= (egenkapital * 1000):
+            return st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
+                            ' \
+        For å få det ønsket lånet må du ha en egenekapital større eller lik {2} Du kan ikke låne: \
+        {0} USD i {1} måneder'.format(Laan * 1000, mnd, (onsk_laan * 1000) * 0.15))
 
-    if prediction == 0:
-            st.write('Takk for søknaden, din søknad er dessverre ikke akseptert. '
-                     ' \
-                      Du kan ikke låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
-    else:
-        st.write('Takk for søknaden, din søknad er akseptert.'
-                 '\
-                 Du kan låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
+        prediction = tin.predic(data, tin.RanForClf())
+
+        if prediction == 0:
+            return st.write('Takk for søknaden, din søknad er dessverre ikke akseptert. '
+                            ' \
+                          Du kan ikke låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
+        else:
+            return st.write('Takk for søknaden, din søknad er akseptert.'
+                            '\
+                     Du kan låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
+
+
+knapp()
