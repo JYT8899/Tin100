@@ -4,7 +4,6 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
-import tensorflow
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -94,9 +93,9 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratif
 
 def RanForClf():
     parameter_grid = {
-        'n_estimators': [100, 200, 300, 400, 500, 600],
+        'n_estimators': [200, 300, 400, 500],
         'max_features': ['auto', 'sqrt', 'log2'],
-        'max_depth': [4, 5, 6, 7, 8],
+        'max_depth': [5, 6, 7, 8],
         'criterion': ['gini', 'entropy']
     }
     rfc = RandomForestClassifier(random_state=42)
