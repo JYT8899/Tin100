@@ -21,7 +21,7 @@ st.markdown("![Alt Text]("
 
 alder = st.number_input("Alder", min_value=0, max_value=100, value=30, step=1, key=1)
 
-gender = st.radio("Kjønn", ("Male", "Female"), key=2)
+gender = st.radio("Kjønn", ("Mann", "Dame"), key=2)
 
 Gift = st.selectbox("Gift", ["Ja", "Nei"], key=3)
 
@@ -33,11 +33,14 @@ Utdanning = st.selectbox("Utdanning", ["Ja", "Nei"], key=5,
 
 Barn = st.number_input("Barn under 18 år", min_value=0, max_value=100, value=0, step=1, key=6)
 
-Eigendom = st.selectbox("Eiendomsområde", ["Urban", "Semiurban", "Landlig"], key=7,
+# Hvor vil du bu?
+# fiks eigendom (landlig)
+
+Eigendom = st.selectbox("Eiendomsområde", ["Storby", "By", "Distrikt Norge"], key=7,
                         help="Hvilke eigendomsområder er du fra av de tre alternativene?")
-if Eigendom == 'Urban':
+if Eigendom == 'Storby':
     Eigendom = 0
-elif Eigendom == 'Semiurban':
+elif Eigendom == 'By':
     Eigendom = 1
 else:
     Eigendom = 2
