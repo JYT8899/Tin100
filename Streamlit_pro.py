@@ -10,6 +10,7 @@ import streamlit as st
 import tin100 as tin
 import pandas as pd
 import numpy as np
+import sklearn
 
 st.title("""
           Lånesøknad
