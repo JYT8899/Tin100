@@ -5,12 +5,12 @@ Created on Tue Jan 10 10:51:21 2023
 
 @author: fbi
 """
+import sklearn
 
 import streamlit as st
 import tin100 as tin
 import pandas as pd
 import numpy as np
-import sklearn
 
 st.title("""
           Lånesøknad
