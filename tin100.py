@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import GridSearchCV
@@ -149,22 +148,22 @@ if __name__ == "__main__":
     ### Preprocesing
 
     ## korrelation matrise
-    plt.figure(figsize=(12, 6))
-
-    sns.heatmap(train.corr(), cmap='BrBG', fmt='.2f',
-                linewidths=2, annot=True)
-
-    ## Bar plot 1
-    sns.catplot(x="Gender", y="Married",
-                hue="Loan_Status",
-                kind="bar",
-                data=train)
-
-    ## Bar plot 2
-    sns.catplot(y="LoanAmount", x="Gender",
-                hue="Loan_Status",
-                kind="bar",
-                data=train)
+    # plt.figure(figsize=(12, 6))
+    #
+    # sns.heatmap(train.corr(), cmap='BrBG', fmt='.2f',
+    #             linewidths=2, annot=True)
+    #
+    # ## Bar plot 1
+    # sns.catplot(x="Gender", y="Married",
+    #             hue="Loan_Status",
+    #             kind="bar",
+    #             data=train)
+    #
+    # ## Bar plot 2
+    # sns.catplot(y="LoanAmount", x="Gender",
+    #             hue="Loan_Status",
+    #             kind="bar",
+    #             data=train)
 
     ### Logistic regression
 
