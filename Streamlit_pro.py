@@ -143,10 +143,10 @@ def knapp():
         {0} USD i {1} måneder'.format(Laan * 1000, mnd, (onsk_laan * 1000) * 0.15))
 
         elif (Inntekt + Medsokerinntekt) >= onsk_laan / 5:
-            st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
-                     ' \
+            return st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
+                            ' \
 For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inntekt) større eller lik {2} Du kan ikke låne: \
-{0} USD i {1} måneder'.format(Laan * 1000, mnd, (onsk_laan * 1000)/5))
+{0} USD i {1} måneder'.format(Laan * 1000, mnd, (onsk_laan * 1000) / 5))
 
         prediction = tin.predic(data, tin.RanForClf())
 
