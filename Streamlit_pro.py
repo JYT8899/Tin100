@@ -113,46 +113,49 @@ with st.sidebar:
                 ' forhold og hva lånet skal brukes til.')
     st.markdown('This dashboard is made by Joel, Dino and Trish, using **Streamlit**')
 
-var = [alder, gender, Selvstendig, Utdanning, Barn,
-       Eigendom, Kredit_hist, Inntekt, Medsokerinntekt, tid_laan,
-       onsk_laan, mnd, Laan, Laan, egenkapital, egenkapital]
 
-var_str = ['Alder', 'Kjønn', 'Selvstendig', 'Utdanning', 'Barn',
-           'Eigendom', 'Kredit historie', 'Inntekt', 'Medsokerinntekt', 'Tidligere lån', 'Låne mengde', 'Låne lengde',
-           'Totalt lån med rente', 'Totalt lån', 'Egenkapital', 'Egenkapital krav for lån']
+### Nedbetalings graph
+
+## Total lån med rente, nedbetalig av lån, fast betaling til toalat lån med rente (totalt kostnad)
+
+def Laan_graph(graph=None):
+    G = Laan * 1000
+    terminrente = ((rente / 100) / (1 - (1 + (rente / 100)) ** (-mnd)))
+    y = G * terminrente  # Måndelig terminbeløp
+
+    nedbetaling = []
+    avdrag = []
+    laanekost = []
+
+    for j in range(mnd):
+        G = G * (1 + rente / 100) - y
+        nedbetaling.append(G)
+        avdrag.append(Laan * 1000 - G)
+        laanekost.append(y * j)
+
+    chart_data = pd.DataFrame(
+        [[i, k, t] for i, k, t in zip(nedbetaling, avdrag, laanekost)],
+        columns=['Nedbetalingsplan', 'Avdrag på lånesum', 'Total terminbeløp'])
+
+    if graph == 1:
+        st.line_chart(chart_data)
+
+    return np.around(y, 2)
+
+
+var = [Laan, Laan, Laan_graph(graph=1), egenkapital]
+
+var_str = ['Totalt lån',
+           'Totalt lån med rente', 'Månedlig terminbeløp', 'Egenkapital krav for lån']
 
 for i, k in zip(var, var_str):
-    if k == 'Inntekt' or k == 'Medsokerinntekt' or k == 'Tidligere lån' or \
-            k == 'Låne mengde' or k == 'Totalt lån' or k == 'Egenkapital':
+    if k == 'Låne mengde' or k == 'Totalt lån':
         i = i * 1000
     elif k == 'Totalt lån med rente':
         i = np.around(Laan_med_rente * 1000, 1)
     elif k == 'Egenkapital krav for lån':
         i = np.around((onsk_laan * 1000) * 0.15, 1)
     st.write(k, ': ', i)
-
-
-### Nedbetalings graph
-
-## Total lån med rente, nedbetalig av lån, fast betaling til toalat lån med rente (totalt kostnad)
-
-def Laan_graph():
-    Laan_med_rente_liste = [(Laan * 1000) * (1 + rente / 100) ** p/12 for p in list(range(mnd))]
-
-    G = Laan * 1000
-    terminrente = ((rente / 100) / (1 - (1 + (rente / 100)) ** (-mnd)))
-    y = G * terminrente  # Måndelig terminbeløp
-
-    nedbetaling = []
-    for j in range(mnd):
-        G = G * (1 + rente / 100) - y
-        nedbetaling.append(G)
-
-    chart_data = pd.DataFrame(
-        [[i, k] for i, k in zip(Laan_med_rente_liste, nedbetaling)],
-        columns=['Total lån med rente', 'Nedbetalingsplan'])
-
-    return st.line_chart(chart_data)
 
 
 ### knapp som sender lånesøknaden til testing
@@ -180,7 +183,9 @@ For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inn
         else:
             return st.write('Takk for søknaden, din søknad er akseptert.'
                             '\
-                     Du kan låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd)), Laan_graph()
+         Totalkostnad på {0}: {1} '
+                    '\
+         Lånekostnad {2} pr. md.'.format(int(mnd / 12), np.around(Laan_med_rente * 1000, 1), np.around(Laan_graph(), 1)))
 
 
 knapp()
