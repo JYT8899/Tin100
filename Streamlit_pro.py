@@ -69,7 +69,7 @@ egenkapital = st.number_input("Egenkapital (antall 1000)", min_value=0.0, max_va
 
 mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=13)
 
-rente = st.slider("Rente", min_value=0.0, max_value=15.0, step=0.5, key=14)
+rente = st.slider("Rente", min_value=0.0, max_value=10.0, step=0.1, key=14)
 
 Laan = tid_laan + onsk_laan
 
@@ -132,6 +132,29 @@ for i, k in zip(var, var_str):
     st.write(k, ': ', i)
 
 
+### Nedbetalings graph
+
+## Total lån med rente, nedbetalig av lån, fast betaling til toalat lån med rente (totalt kostnad)
+
+def Laan_graph():
+    Laan_med_rente_liste = [(Laan * 1000) * (1 + rente / 100) ** p/12 for p in list(range(mnd))]
+
+    G = Laan * 1000
+    terminrente = ((rente / 100) / (1 - (1 + (rente / 100)) ** (-mnd)))
+    y = G * terminrente  # Måndelig terminbeløp
+
+    nedbetaling = []
+    for j in range(mnd):
+        G = G * (1 + rente / 100) - y
+        nedbetaling.append(G)
+
+    chart_data = pd.DataFrame(
+        [[i, k] for i, k in zip(Laan_med_rente_liste, nedbetaling)],
+        columns=['Total lån med rente', 'Nedbetalingsplan'])
+
+    return st.line_chart(chart_data)
+
+
 ### knapp som sender lånesøknaden til testing
 
 def knapp():
@@ -157,7 +180,7 @@ For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inn
         else:
             return st.write('Takk for søknaden, din søknad er akseptert.'
                             '\
-                     Du kan låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd))
+                     Du kan låne: {0} USD i {1} måneder'.format(Laan * 1000, mnd)), Laan_graph()
 
 
 knapp()

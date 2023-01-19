@@ -30,7 +30,6 @@ for col in test:
     imr = imr.fit(test[[f'{col}']])
     test[f'{col}'] = imr.transform(test[[f'{col}']])
 
-
 le = LabelEncoder()
 for col in train[
     ['Gender', 'Married', 'Education', 'Self_Employed', 'Dependents', 'Property_Area', 'Credit_History',
@@ -77,8 +76,8 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratif
 
 def RanForClf():
     parameter_grid = {
-        'n_estimators': [200, 300, 400, 500],
-        'max_features': ['auto', 'sqrt', 'log2'],
+        'n_estimators': [200, 300, 400],
+        'max_features': ['auto', 'sqrt'],
         'max_depth': [5, 6, 7, 8],
         'criterion': ['gini', 'entropy']
     }
@@ -86,17 +85,17 @@ def RanForClf():
     CV_rfc = GridSearchCV(estimator=rfc, param_grid=parameter_grid, cv=5, scoring='f1', n_jobs=-1, verbose=1)
     CV_rfc.fit(x, y)
     return CV_rfc
-    #print('Potensielt best score ut ifra train datasettet: ', CV_rfc.best_score_)
+    # print('Potensielt best score ut ifra train datasettet: ', CV_rfc.best_score_)
     # CV_rfc.best_params_
 
-    #y_pred_data = CV_rfc.predict(data)
+    # y_pred_data = CV_rfc.predict(data)
 
-    #return "Søknaden er godkjent hvis output er (1) og ikke godkjent for (0): ", y_pred_data
-
+    # return "Søknaden er godkjent hvis output er (1) og ikke godkjent for (0): ", y_pred_data
 
 
 def predic(x, model):
     return model.predict(x)
+
 
 ### Gridsearch for feature importance
 #
