@@ -123,15 +123,18 @@ def Laan_graph(graph=None):
     terminrente = ((rente / 100) / (1 - (1 + (rente / 100)) ** (-mnd)))
     y = G * terminrente  # Måndelig terminbeløp
 
+    tot = G*(1+rente/100)**(mnd/12)
+    terminbelop = tot/mnd
+
     nedbetaling = []
     avdrag = []
     laanekost = []
 
-    for j in range(mnd):
+    for j in range(mnd + 1):
         G = G * (1 + rente / 100) - y
         nedbetaling.append(G)
         avdrag.append(Laan * 1000 - G)
-        laanekost.append(y * j)
+        laanekost.append(terminbelop * j)
 
     chart_data = pd.DataFrame(
         [[i, k, t] for i, k, t in zip(nedbetaling, avdrag, laanekost)],
