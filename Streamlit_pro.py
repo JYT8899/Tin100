@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 st.title("""
-          Lånesøknad
+          Lånesøknad for boliglån
     """)
 
 st.markdown("![Alt Text]("
@@ -34,11 +34,16 @@ Utdanning = st.selectbox("Utdanning", ["Ja", "Nei"], key=5,
 
 Barn = st.number_input("Barn under 18 år", min_value=0, max_value=100, value=0, step=1, key=6)
 
+if Barn >= 3:
+    Barn = pd.Series('3+')
+else:
+    Barn = Barn
+
 # Hvor vil du bu?
 # fiks eigendom (landlig)
 
 Eigendom = st.selectbox("Eiendomsområde", ["Storby", "By", "Distrikt Norge"], key=7,
-                        help="Hvilke eigendomsområder er du fra av de tre alternativene?")
+                        help="Hvilken eigendomsområder er du fra?")
 if Eigendom == 'Storby':
     Eigendom = 0
 elif Eigendom == 'By':
@@ -69,7 +74,8 @@ egenkapital = st.number_input("Egenkapital (antall 1000)", min_value=0.0, max_va
 
 mnd = st.slider("Låne lengde (antall måned)", 0, 360, 1, help="Hvor lang tid vil du låne?", key=13)
 
-rente = st.slider("Rente", min_value=0.0, max_value=10.0, step=0.1, key=14)
+rente = st.slider("Rente", min_value=0.0, max_value=10.0, step=0.1, key=14,
+                  help='Sjekk ut nebetaligsplan for ulike renter.')
 
 Laan = tid_laan + onsk_laan
 
@@ -92,7 +98,7 @@ data_dic = {'Gender': [np.where(gender == 'Male', 1, 0)],
             'LoanAmount': [Laan * 1000],
             'Loan_Amount_Term': [tid_laan * 1000],
             'Credit_History': [Kredit_hist],
-            'Property_Area': [np.where(Eigendom == 'Urban', 1, 0)]}
+            'Property_Area': [Eigendom]}
 
 data = pd.DataFrame.from_dict(data_dic)
 
@@ -123,8 +129,8 @@ def Laan_graph(graph=None):
     terminrente = ((rente / 100) / (1 - (1 + (rente / 100)) ** (-mnd)))
     y = G * terminrente  # Måndelig terminbeløp
 
-    tot = G*(1+rente/100)**(mnd/12)
-    terminbelop = tot/mnd
+    tot = G * (1 + rente / 100) ** (mnd / 12)
+    terminbelop = tot / mnd
 
     nedbetaling = []
     avdrag = []
@@ -142,9 +148,11 @@ def Laan_graph(graph=None):
 
     if graph == 1:
         st.line_chart(chart_data)
+    else:
+        return np.around(y, 2)
 
-    return np.around(y, 2)
 
+### Tekst under grafen.
 
 var = [Laan, Laan, Laan_graph(graph=1), egenkapital]
 
@@ -165,13 +173,13 @@ for i, k in zip(var, var_str):
 
 def knapp():
     if st.button('Send søknad'):
-        if (onsk_laan * 1000) * 0.15 >= (egenkapital * 1000):
+        if onsk_laan * 0.15 >= egenkapital:
             return st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
                             ' \
         For å få det ønsket lånet må du ha en egenekapital større eller lik {2} Du kan ikke låne: \
         {0} USD i {1} måneder'.format(Laan * 1000, mnd, (onsk_laan * 1000) * 0.15))
 
-        elif (Inntekt + Medsokerinntekt) <= onsk_laan / 5:
+        elif (Inntekt + Medsokerinntekt) <= (onsk_laan / 5):
             return st.write('Takk for søknaden, din søknad er dessverre ikke akseptert.'
                             ' \
 For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inntekt) større eller lik {2} Du kan ikke låne: \
@@ -187,8 +195,9 @@ For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inn
             return st.write('Takk for søknaden, din søknad er akseptert.'
                             '\
          Totalkostnad på {0}: {1} '
-                    '\
-         Lånekostnad {2} pr. md.'.format(int(mnd / 12), np.around(Laan_med_rente * 1000, 1), np.around(Laan_graph(), 1)))
+                            '\
+         Lånekostnad {2} pr. md.'.format(int(mnd / 12), np.around(Laan_med_rente * 1000, 1),
+                                         np.around(Laan_graph(), 1)))
 
 
 knapp()
