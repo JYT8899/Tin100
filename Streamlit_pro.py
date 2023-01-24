@@ -35,7 +35,7 @@ Utdanning = st.selectbox("Utdanning", ["Ja", "Nei"], key=5,
 Barn = st.number_input("Barn under 18 år", min_value=0, max_value=100, value=0, step=1, key=6)
 
 if Barn >= 3:
-    Barn = pd.Series('3+')
+    Barn = 3
 else:
     Barn = Barn
 
@@ -151,10 +151,11 @@ def Laan_graph(graph=None):
     else:
         return np.around(y, 2)
 
+Laan_graph(graph=1)
 
 ### Tekst under grafen.
 
-var = [Laan, Laan, Laan_graph(graph=1), egenkapital]
+var = [Laan, Laan, Laan_graph(graph=2), egenkapital]
 
 var_str = ['Totalt lån',
            'Totalt lån med rente', 'Månedlig terminbeløp', 'Egenkapital krav for lån']
@@ -194,9 +195,9 @@ For å få det ønsket lånet må du ha en total inntekt (medsøkerinntekt + inn
         else:
             return st.write('Takk for søknaden, din søknad er akseptert.'
                             '\
-         Totalkostnad på {0}: {1} '
+         Totalkostnad på {0} år: {1} '
                             '\
-         Lånekostnad {2} pr. md.'.format(int(mnd / 12), np.around(Laan_med_rente * 1000, 1),
+         , Lånekostnad {2} pr. md.'.format(int(mnd / 12), np.around(Laan_med_rente * 1000, 1),
                                          np.around(Laan_graph(), 1)))
 
 
