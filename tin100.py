@@ -20,13 +20,13 @@ test = test_raw.drop(['Loan_ID'], axis=1)
 
 for col in train:
     imr = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    imr = imr.fit(train[[f'{col}']])
-    train[f'{col}'] = imr.transform(train[[f'{col}']])
+    imr = imr.fit(train[[col]])
+    train[col] = imr.transform(train[[col]])
 
 for col in test:
     imr = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    imr = imr.fit(test[[f'{col}']])
-    test[f'{col}'] = imr.transform(test[[f'{col}']])
+    imr = imr.fit(test[[col]])
+    test[col] = imr.transform(test[[col]])
 
 le = LabelEncoder()
 for col in train[
