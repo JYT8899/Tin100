@@ -1,4 +1,3 @@
-
 ### Importering av moduler
 
 import pandas as pd
@@ -10,7 +9,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-
 ### Split datasett i train og test
 
 train_raw = pd.read_csv("train.csv")
@@ -18,15 +16,18 @@ test_raw = pd.read_csv("test.csv")
 train = train_raw.drop(['Loan_ID'], axis=1)
 test = test_raw.drop(['Loan_ID'], axis=1)
 
-for col in train:
-    imr = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    imr = imr.fit(train[[col]])
-    train[col] = imr.transform(train[[col]])
+simp = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
 
-for col in test:
-    imr = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    imr = imr.fit(test[[col]])
-    test[col] = imr.transform(test[[col]])
+
+def add_values(var):
+    for col in var.columns:
+        simp_1 = simp.fit(var[[f'{col}']])
+        var[f'{col}'] = simp_1.transform(var[[f'{col}']])
+    return var
+
+
+train = add_values(train)
+test = add_values(test)
 
 le = LabelEncoder()
 for col in train[
@@ -34,7 +35,6 @@ for col in train[
      'Loan_Status']]:
     # print(col)
     train[col] = le.fit_transform(train[col])
-
 
 train['CoapplicantIncome'] = train['CoapplicantIncome'].astype('int')
 # train.head()
@@ -44,7 +44,6 @@ for col in test[
     ['Gender', 'Married', 'Education', 'Self_Employed', 'Dependents', 'Credit_History', 'Property_Area']]:
     # print(col)
     test[col] = le.fit_transform(test[col])
-
 
 test['CoapplicantIncome'] = test['CoapplicantIncome'].astype('int')
 
@@ -71,7 +70,6 @@ def RanForClf():
 
 def predic(x, model):
     return model.predict(x)
-
 
 
 ### Predict of the whole datasett
