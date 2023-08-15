@@ -21,9 +21,9 @@ st.title("""
 
 ## Bilde
 
-st.markdown("![Alt Text]("
-            "https://blogg.paretobank.no/hs-fs/hubfs/Driftsfinansiering%20Slik%20skriver%20du%\
-20en%20lånesøknad.png?width=1000&name=Driftsfinansiering%20Slik%20skriver%20du%20en%20lånesøknad.png)")
+st.image(
+    "https://www.wop.no/wp-content/uploads/2018/10/boliglan-1240x720.jpg?v=1587154544"
+)
 
 alder = st.number_input("**Alder**", min_value=0, max_value=100, value=30, step=1, key=1)
 
