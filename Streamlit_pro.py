@@ -13,6 +13,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+## Bakgrunn
+
+primaryColor="#F63366"
+st.get_option("theme.primaryColor")
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#F0F2F6"
+textColor="#262730"
+font="sans serif"
+
 ## title
 
 st.title("""
